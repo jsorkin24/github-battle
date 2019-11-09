@@ -3,52 +3,11 @@ import { battle } from '../utils/api'
 import { FaCompass, FaBriefcase, FaUsers, FaUserFriends, FaCode, FaUser } from 'react-icons/fa'
 import Card from './Card'
 import PropTypes from 'prop-types'
-
-const styles = {
-  container: {
-    position: 'relative',
-    display: 'flex'
-  },
-  tooltip: {
-    boxSizing: 'border-box',
-    position: 'absolute',
-    width: '160px',
-    bottom: '100%',
-    left: '50%',
-    marginLeft: '-80px',
-    borderRadius: '3px',
-    backgroundColor: 'hsla(0, 0%, 20%, 0.9)',
-    padding: '7px',
-    marginBottom: '5px',
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: '14px',
-  }
-}
+import Tooltip from './Tooltip'
 
 class ProfileList extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      hoveringLocation: false,
-      hoveringCompany: false
-    }
 
-    this.mouseOver = this.mouseOver.bind(this)
-    this.mouseOut = this.mouseOut.bind(this)
-  }
-  mouseOver(id) {
-    this.setState({
-      [id]: true
-    })
-  }
 
-  mouseOut(id) {
-    this.setState({
-      [id]: false
-    })
-  }
-  
   render() {
     const { profile } = this.props
     return (
@@ -58,21 +17,19 @@ class ProfileList extends React.Component {
           {profile.name}
         </li>
         {profile.location && (
-          <li onMouseOver={() => this.mouseOver('hoveringLocation')}
-              onMouseOut={()=> this.mouseOut('hoveringLocation')}
-              style={styles.container}
-          >
-            {hoveringLocation === true && <div style={styles.tooltip}>User's :ocation</div>}
-            <FaCompass color='rgb(144, 115, 255)' size={22} />
-            {profile.location}
+          <li>
+            <Tooltip text="User's location">
+              <FaCompass color='rgb(144, 115, 255)' size={22} />
+              {profile.location}
+            </Tooltip>
           </li>
         )}
         {profile.company && (
-          <li onMouseOver={() => this.mouseOver('hoveringCompany')}
-              onMouseOut={() => this.mouseOut('hoveringCompany')}>
-            {hoveringCompany === true && <div style={styles.tooltip}>User's Company</div>}
-            <FaBriefcase color='#795548' size={22} />
-            {profile.company}
+          <li>
+            <Tooltip text="User's company">
+              <FaBriefcase color='#795548' size={22} />
+              {profile.company}
+            </Tooltip>
           </li>
         )}
         <li>
@@ -103,10 +60,10 @@ export default class Results extends React.Component {
       loading: true
     }
   }
-  componentDidMount () {
+  componentDidMount() {
     const { playerOne, playerTwo } = this.props
 
-    battle([ playerOne, playerTwo ])
+    battle([playerOne, playerTwo])
       .then((players) => {
         this.setState({
           winner: players[0],
@@ -144,7 +101,7 @@ export default class Results extends React.Component {
             href={winner.profile.html_url}
             name={winner.profile.login}
           >
-            <ProfileList profile={winner.profile}/>
+            <ProfileList profile={winner.profile} />
           </Card>
           <Card
             header={winner.score === loser.score ? 'Tie' : 'Loser'}
@@ -153,13 +110,13 @@ export default class Results extends React.Component {
             name={loser.profile.login}
             href={loser.profile.html_url}
           >
-            <ProfileList profile={loser.profile}/>
+            <ProfileList profile={loser.profile} />
           </Card>
         </div>
         <button
           onClick={this.props.onReset}
           className='btn dark-btn btn-space'>
-            Reset
+          Reset
         </button>
       </React.Fragment>
     )
